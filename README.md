@@ -1,58 +1,273 @@
-# CakePHP Application Skeleton
+# MiniCoreVentas - CakePHP
 
-![Build Status](https://github.com/cakephp/app/actions/workflows/ci.yml/badge.svg?branch=5.x)
-[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
-[![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
+## Descripción
 
-A skeleton for creating applications with [CakePHP](https://cakephp.org) 5.x.
+**MiniCoreVentas** es una aplicación web desarrollada con **CakePHP** que permite gestionar ventas, clientes y vendedores, además de calcular automáticamente las comisiones en función del porcentaje asignado a cada vendedor.
 
-The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
+El sistema incluye filtrado por rango de fechas, visualización de ventas y una vista especializada de **gestión de comisiones**, donde se muestra un resumen claro del desempeño de cada vendedor.
 
-## Installation
+---
 
-1. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+## Características
 
-If Composer is installed globally, run
+* Registro de ventas con cálculo automático de total y comisión.
+* Relación entre clientes, vendedores y productos.
+* Visualización de ventas con datos descriptivos (no IDs).
+* Filtro de ventas por rango de fechas.
+* Cálculo automático de comisiones por vendedor.
+* Vista de **gestión de comisiones** con resumen por vendedor.
+* Uso de paginación para optimizar la visualización.
+* Manejo de relaciones ORM con CakePHP.
+* Interfaz web generada con Bake y adaptada manualmente.
 
-```bash
-composer create-project --prefer-dist cakephp/app
+---
+
+## Estructura del Proyecto
+
+```
+ventas_app/
+│
+├── src/
+│   ├── Controller/
+│   │   └── VentasController.php
+│   ├── Model/
+│   │   ├── Table/
+│   │   │   ├── VentasTable.php
+│   │   │   ├── ClientesTable.php
+│   │   │   ├── VendedoresTable.php
+│   │   │   ├── ProductosTable.php
+│   │   │   └── DetalleVentasTable.php
+│   │   └── Entity/
+│   │
+├── templates/
+│   ├── Ventas/
+│   │   ├── index.php
+│   │   ├── add.php
+│   │   ├── view.php
+│   │   └── comisiones.php
+│   │
+├── config/
+│   └── app.php
+│
+├── webroot/
+│
+└── README.md
 ```
 
-In case you want to use a custom app dir name (e.g. `/myapp/`):
+---
+
+## Base de Datos
+
+El sistema utiliza MySQL con las siguientes tablas principales:
+
+* `clientes`
+* `vendedores`
+* `ventas`
+* `detalle_ventas`
+* `productos`
+
+---
+
+## Requisitos
+
+* PHP 8.x
+* Composer
+* MySQL
+* Servidor local (XAMPP, Laragon, etc.)
+
+---
+
+## Instalación
+
+1. **Clonar el repositorio:**
 
 ```bash
-composer create-project --prefer-dist cakephp/app myapp
+git clone <URL_DEL_REPOSITORIO>
+cd ventas_app
 ```
 
-You can now either use your machine's webserver to view the default home page, or start
-up the built-in webserver with:
+---
+
+2. **Instalar dependencias:**
 
 ```bash
-bin/cake server -p 8765
+composer install
 ```
 
-Then visit `http://localhost:8765` to see the welcome page.
+---
 
-## Demo app
+3. **Configurar la base de datos:**
 
-Check out the [5.x-demo branch](https://github.com/cakephp/app/tree/5.x-demo), which contains demo migrations and a seeder.
-See the [README](https://github.com/cakephp/app/blob/5.x-demo/README.md) on how to get it running.
+Editar el archivo:
 
-## Update
+```
+config/app_local.php
+```
 
-Since this skeleton is a starting point for your application and various files
-would have been modified as per your needs, there isn't a way to provide
-automated upgrades, so you have to do any updates manually.
+Configurar:
 
-## Configuration
+```php
+'Datasources' => [
+    'default' => [
+        'host' => 'localhost',
+        'username' => 'root',
+        'password' => '',
+        'database' => 'ventas_db',
+    ],
+]
+```
 
-Read and edit the environment specific `config/app_local.php` and set up the
-`'Datasources'` and any other configuration relevant for your application.
-Other environment agnostic settings can be changed in `config/app.php`.
+---
 
-## Layout
+4. **Crear la base de datos:**
 
-The app skeleton uses [Milligram](https://milligram.io/) (v1.3) minimalist CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+```sql
+CREATE DATABASE ventas_db;
+```
+
+---
+
+5. **Crear tablas (ejemplo simplificado):**
+
+```sql
+CREATE TABLE vendedores (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100),
+    porcentaje_comision DECIMAL(5,2)
+);
+
+CREATE TABLE clientes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100)
+);
+
+CREATE TABLE ventas (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    cliente_id INT,
+    vendedor_id INT,
+    total DECIMAL(10,2),
+    comision DECIMAL(10,2),
+    created DATE
+);
+```
+
+---
+
+6. **Insertar datos de prueba:**
+
+```sql
+INSERT INTO vendedores (id, nombre, porcentaje_comision) VALUES
+(1, 'Perico P', 10),
+(2, 'Zoila B', 12),
+(3, 'Aquiles C', 8),
+(4, 'Johny M', 15);
+
+INSERT INTO clientes (id, nombre) VALUES
+(1, 'Cliente General');
+```
+
+---
+
+7. **Ejecutar el proyecto:**
+
+```bash
+bin/cake server
+```
+
+Abrir en navegador:
+
+```
+http://localhost:8765/ventas
+```
+
+---
+
+## Funcionalidades Implementadas
+
+### Gestión de Ventas
+
+* Registro de ventas con múltiples productos.
+* Cálculo automático del total.
+* Cálculo automático de comisión basado en el vendedor.
+
+---
+
+### Filtro por Fechas
+
+Se implementó un filtro dinámico:
+
+```php
+created >= inicio AND created <= fin
+```
+
+Aplicado tanto en:
+
+* listado de ventas
+* resumen de comisiones
+
+---
+
+### Gestión de Comisiones
+
+Se creó una vista personalizada:
+
+```
+/ventas/comisiones
+```
+
+Muestra:
+
+* Nombre del vendedor
+* Total de ventas
+* Porcentaje de comisión
+* Comisión total generada
+
+---
+
+### Relaciones ORM
+
+Se utilizaron asociaciones:
+
+```php
+Ventas belongsTo Clientes
+Ventas belongsTo Vendedores
+Ventas hasMany DetalleVentas
+DetalleVentas belongsTo Productos
+```
+
+---
+
+## Uso
+
+* Registrar una venta desde el botón **"New Venta"**.
+* Seleccionar cliente, vendedor y productos.
+* Visualizar las ventas en la tabla principal.
+* Filtrar por fechas.
+* Acceder a la vista **Gestión de Comisiones**.
+* Analizar el rendimiento de vendedores.
+
+---
+
+## Personalización
+
+* Puedes modificar los porcentajes de comisión directamente en la tabla `vendedores`.
+* Puedes agregar nuevos productos y extender el sistema.
+* Se puede integrar lógica avanzada de reglas de comisión.
+
+---
+
+## Conclusión
+
+El sistema implementa un modelo completo de gestión de ventas utilizando CakePHP, aplicando buenas prácticas de:
+
+* Arquitectura MVC
+* ORM
+* Paginación
+* Filtros dinámicos
+* Cálculo automático de negocio
+
+---
+
+## Autor
+
+Proyecto desarrollado como práctica académica utilizando CakePHP.
