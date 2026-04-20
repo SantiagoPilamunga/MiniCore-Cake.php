@@ -1,6 +1,22 @@
-FROM php:8.1-apache
+FROM php:8.2-apache
 
-RUN docker-php-ext-install pdo pdo_mysql
+RUN apt-get update && apt-get install -y \
+    unzip \
+    git \
+    curl \
+    libicu-dev \
+    libzip-dev \
+    libonig-dev \
+    zip
+
+RUN docker-php-ext-install \
+    pdo \
+    pdo_mysql \
+    intl \
+    mbstring \
+    zip
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY . /var/www/html/
 
