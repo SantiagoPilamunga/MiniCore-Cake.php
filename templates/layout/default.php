@@ -43,7 +43,6 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             <a target="_blank" rel="noopener" href="https://api.cakephp.org/">API</a>
         </div>
         <ul>
-            <li><?= $this->Html->link('Inicio', ['controller' => 'Vendedores', 'action' => 'display', 'index']) ?></li>
             <li><?= $this->Html->link('Ventas', ['controller' => 'Ventas', 'action' => 'index']) ?></li>
             <li><?= $this->Html->link('Clientes', ['controller' => 'Clientes', 'action' => 'index']) ?></li>
             <li><?= $this->Html->link('Vendedores', ['controller' => 'Vendedores', 'action' => 'index']) ?></li>
