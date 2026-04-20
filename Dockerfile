@@ -8,6 +8,11 @@ RUN apt-get update && apt-get install -y \
 # Extensiones PHP
 RUN docker-php-ext-install pdo pdo_mysql intl zip
 
+# Crear directorios de CakePHP si no existen y ajustar permisos
+RUN mkdir -p /var/www/html/logs /var/www/html/tmp /var/www/html/tmp/cache /var/www/html/tmp/cache/models /var/www/html/tmp/cache/persistent \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/logs /var/www/html/tmp
+
 # Habilitar mod_rewrite para CakePHP
 RUN a2enmod rewrite
 
